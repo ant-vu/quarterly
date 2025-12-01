@@ -31,6 +31,28 @@ Quick links
 
 - See `CONTRIBUTING.md` for recommended local setup, code style, and test commands specific to this project.
 
+### Rust quickstart
+
+This repository includes a minimal Rust CLI to get started.
+
+Build:
+
+```bash
+cargo build --release
+```
+
+Run (example):
+
+```bash
+cargo run -- --input data/example.csv
+```
+
+Run tests:
+
+```bash
+cargo test
+```
+
 ## Prerequisites
 
 - List the tools required to work on this project (edit as appropriate):
