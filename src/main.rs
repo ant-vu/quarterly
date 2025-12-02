@@ -13,7 +13,10 @@ fn main() {
     let cli = Cli::parse();
     println!("quarterly v0.1.0");
     match cli.input {
-        Some(path) => println!("Would generate report from: {}", path),
+        Some(path) => match quarterly::count_lines_in_file(&path) {
+            Ok(count) => println!("Found {} non-empty lines in {}", count, path),
+            Err(e) => eprintln!("Error reading {}: {}", path, e),
+        },
         None => println!("Run with --input <file> to generate a report."),
     }
 }
