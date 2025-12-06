@@ -9,11 +9,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         toolchain: [stable, beta, nightly]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Cache cargo registry, git index and target
         uses: actions/cache@v4
@@ -34,8 +38,23 @@ jobs:
           override: true
           components: clippy,rustfmt
 
-      - name: Check formatting
-        run: cargo fmt -- --check
+      - name: Run rustfmt (auto-fix on stable)
+        if: matrix.toolchain == 'stable'
+        run: |
+          cargo fmt
+
+      - name: Commit formatting changes
+        if: matrix.toolchain == 'stable'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No formatting changes"
+          else
+            git commit -m "chore: apply rustfmt changes [skip ci]"
+            git push
+          fi
 
       - name: Run clippy
         run: cargo clippy --all-targets --all-features -- -D warnings
