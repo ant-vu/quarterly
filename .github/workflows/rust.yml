@@ -38,6 +38,9 @@ jobs:
           override: true
           components: clippy,rustfmt
 
+        - name: Run tests
+          run: cargo test --all --verbose
+
       - name: Run rustfmt (auto-fix on stable)
         if: matrix.toolchain == 'stable'
         run: |
